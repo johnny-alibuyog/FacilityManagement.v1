@@ -6,6 +6,7 @@
 .idea/
 .ionide/
 .vs/
+dist/
 deploy/
 obj/
 bin/

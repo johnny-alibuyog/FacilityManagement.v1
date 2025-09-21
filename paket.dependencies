@@ -1,6 +1,7 @@
 source https://api.nuget.org/v3/index.json
 
 storage: none
+nuget Fable.Browser.Dom
 nuget Fable.Core
 nuget Fake.Core.Target
 nuget Farmer

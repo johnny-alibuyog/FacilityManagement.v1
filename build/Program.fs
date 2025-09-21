@@ -9,9 +9,11 @@ open Build.Helpers
 
 initializeContext ()
 
+let getAbsolute path = Path.getFullName path
+
 let path = {|
-    solution = Path.getFullName "../Application.sln"
-    client = Path.getFullName "../src/Client"
+    root = getAbsolute "../"
+    client = getAbsolute "../src/Client"
 |}
 
 Target.create "Clean" (fun _ ->
@@ -19,13 +21,19 @@ Target.create "Clean" (fun _ ->
 )
 
 Target.create "Build" (fun _ -> 
-    run dotnet [ "build"; "Application.sln" ] path.solution
+    run dotnet [ "build"; "Application.sln" ] path.root
 )
 
 Target.create "Run" (fun _ ->
-    [ "client", dotnet [ "fable"; "watch"; ] path.client ]
+    [ "client", dotnet [ "fable"; "watch"; "--verbose"; "--run"; "npx"; "vite"; ] path.client ]
     |> runParallel
 )
+
+open Fake.Core.TargetOperators
+
+let dependencies = [
+    "Clean" ==> "Build" ==> "Run"
+]
 
 [<EntryPoint>]
 let main args = 
