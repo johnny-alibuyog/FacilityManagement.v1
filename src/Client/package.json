@@ -1,16 +1,19 @@
 {
   "name": "client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "Program.fs.js",
+  "private": true,
+  "version": "0.0.1",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "engines": {
+    "node": "~18 || ~20 || ~22",
+    "npm": "~9 || ~10"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {},
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.3",
     "vite": "^7.1.6"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   }
 }

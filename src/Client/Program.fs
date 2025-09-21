@@ -1,5 +1,13 @@
-﻿open Browser
+﻿open Elmish
+open Client.Pages.Layout
 
-let div = document.createElement "div"
-div.innerHTML <- "Hello world!"
-document.body.appendChild div |> ignore
+ #if DEBUG
+open Elmish.HMR
+#endif
+
+Program.mkProgram init update view
+ #if DEBUG
+|> Program.withConsoleTrace
+#endif
+|> Program.withReactSynchronous "root"
+|> Program.run

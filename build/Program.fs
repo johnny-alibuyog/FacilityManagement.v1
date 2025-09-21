@@ -30,12 +30,12 @@ Target.create "Build" (fun _ ->
 )
 
 Target.create "Run" (fun _ ->
-    [ "client", dotnet [ "fable"; "watch"; "--verbose"; "--run"; "npx"; "vite"; ] path.client ]
+    [ "client", dotnet [ "fable"; "watch"; "-o"; "output"; "-s"; "--run"; "npx"; "vite"; ] path.client ]
     |> runParallel
 )
 
 Target.create "Bundle" (fun _ ->
-    run dotnet [ "fable"; "--run"; "npx"; "vite"; "build" ] path.client
+    run dotnet [ "fable"; "-o"; "output"; "-s"; "--run"; "npx"; "vite"; "build" ] path.client
 )
 
 open Fake.Core.TargetOperators

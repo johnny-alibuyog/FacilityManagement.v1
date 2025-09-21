@@ -1,6 +1,7 @@
 STORAGE: NONE
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    Fable.AST (4.6) - restriction: >= netstandard2.0
     Fable.Browser.Blob (1.4) - restriction: >= netstandard2.0
       Fable.Core (>= 3.2.8) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
@@ -22,6 +23,24 @@ NUGET
       Fable.Core (>= 3.2.8) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
     Fable.Core (4.5)
+    Fable.Elmish (5.0.2)
+      Fable.Core (>= 4.0) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Fable.Elmish.HMR (8.0)
+      Fable.Core (>= 4.5) - restriction: >= netstandard2.0
+      Fable.Elmish.React (>= 5.0) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Fable.Elmish.React (5.0) - restriction: >= netstandard2.0
+      Fable.Elmish (>= 5.0) - restriction: >= netstandard2.0
+      Fable.ReactDom.Types (>= 18.2) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Fable.React.Types (18.4) - restriction: >= netstandard2.0
+      Fable.Browser.Dom (>= 2.4.4) - restriction: >= netstandard2.0
+      Fable.Core (>= 3.2.7) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Fable.ReactDom.Types (18.2) - restriction: >= netstandard2.0
+      Fable.React.Types (>= 18.3) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
     Fake.Core.CommandLineParsing (6.1.3) - restriction: >= netstandard2.0
       FParsec (>= 1.1.1) - restriction: >= netstandard2.0
       FSharp.Core (>= 8.0.301) - restriction: >= netstandard2.0
@@ -63,6 +82,13 @@ NUGET
     Farmer (1.9.21)
       FSharp.Core (>= 5.0) - restriction: >= netstandard2.0
       System.Text.Json (>= 5.0) - restriction: >= netstandard2.0
+    Feliz (2.9)
+      Fable.ReactDom.Types (>= 18.2) - restriction: >= netstandard2.0
+      Feliz.CompilerPlugins (>= 2.2) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
+    Feliz.CompilerPlugins (2.2) - restriction: >= netstandard2.0
+      Fable.AST (>= 4.2.1) - restriction: >= netstandard2.0
+      FSharp.Core (>= 4.7.2) - restriction: >= netstandard2.0
     FParsec (1.1.1) - restriction: >= netstandard2.0
       FSharp.Core (>= 4.3.4) - restriction: || (>= net45) (>= netstandard2.0)
       System.ValueTuple (>= 4.4) - restriction: >= net45
