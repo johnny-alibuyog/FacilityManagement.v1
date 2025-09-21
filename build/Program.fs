@@ -16,6 +16,11 @@ let path = {|
     client = getAbsolute "../src/Client"
 |}
 
+Target.create "NpmInstall" (fun _ -> 
+    run npm [ "ci" ] path.client
+)
+
+
 Target.create "Clean" (fun _ ->
     run dotnet [ "fable"; "clean"; "--yes" ] path.client 
 )
@@ -36,8 +41,8 @@ Target.create "Bundle" (fun _ ->
 open Fake.Core.TargetOperators
 
 let dependencies = [
-    "Clean" ==> "Build" ==> "Run"
-    "Clean" ==> "Build" ==> "Bundle"
+    "Clean" ==> "NpmInstall" ==> "Build" ==> "Run"
+    "Clean" ==> "NpmInstall" ==> "Build" ==> "Bundle"
 ]
 
 [<EntryPoint>]
