@@ -29,10 +29,15 @@ Target.create "Run" (fun _ ->
     |> runParallel
 )
 
+Target.create "Bundle" (fun _ ->
+    run dotnet [ "fable"; "--run"; "npx"; "vite"; "build" ] path.client
+)
+
 open Fake.Core.TargetOperators
 
 let dependencies = [
     "Clean" ==> "Build" ==> "Run"
+    "Clean" ==> "Build" ==> "Bundle"
 ]
 
 [<EntryPoint>]
