@@ -5,7 +5,7 @@ open Client.Pages.Layout
 open Elmish.HMR
 #endif
 
-Program.mkProgram init update view
+Program.mkProgram State.init State.update View.render
  #if DEBUG
 |> Program.withConsoleTrace
 #endif

@@ -8,4 +8,5 @@ nuget Fable.Elmish.HMR
 nuget Fake.Core.Target
 nuget Farmer
 nuget Feliz
+nuget Feliz.Router
 nuget FSharp.Core
