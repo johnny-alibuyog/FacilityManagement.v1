@@ -8,6 +8,7 @@
     <Compile Include="src/Pages/Types.fs" />
     <Compile Include="src/Pages/Login/Route.fs" />
     <Compile Include="src/Pages/Login/Page.fs" />
+    <Compile Include="src/Pages/Sandbox/SplittingProgramsPage.fs" />
     <Compile Include="src/Pages/Route.fs" />
     <Compile Include="src/Pages/Layout.fs" />
     <Compile Include="Program.fs" />

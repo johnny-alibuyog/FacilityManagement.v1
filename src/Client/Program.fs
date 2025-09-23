@@ -1,4 +1,6 @@
-﻿open Elmish
+﻿(*
+
+open Elmish
 open Client.Pages.Layout
 
  #if DEBUG
@@ -11,3 +13,16 @@ Program.mkProgram State.init State.update View.render
 #endif
 |> Program.withReactSynchronous "root"
 |> Program.run
+
+*)
+
+open Elmish
+open Client.Pages.Sandbox.SplittingProgramsPage
+
+open Elmish.HMR
+
+Program.mkSimple State.init State.update View.render
+|> Program.withConsoleTrace
+|> Program.withReactSynchronous "root"
+|> Program.run
+
