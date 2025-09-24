@@ -7,7 +7,11 @@ module Types =
         password: string
     }
 
-    type Msg = | NoOp
+    type Msg = 
+        | Loaded
+        | SetUsername of string
+        | SetPassword of string
+        | Submit
 
     type State = {
         credential: Credentials
@@ -17,11 +21,22 @@ module State =
     open Elmish
 
     let init () = 
-        { credential = { username = ""; password = "" } }, Cmd.none
+        { credential = { username = "sadrfqwerr"; password = "dfdfdf" } }, Cmd.none
 
     let update msg state =
         match msg with
-        | NoOp -> state, Cmd.none
+        | Loaded -> 
+            state, Cmd.none
+        
+        | SetUsername username ->
+            { state with credential = { state.credential with username = username } }, Cmd.none
+
+        | SetPassword password ->
+            { state with credential = { state.credential with password = password } }, Cmd.none
+
+        | Submit ->
+            // Handle login submission logic here
+            state, Cmd.none
 
 module View =
     open Feliz
@@ -33,26 +48,23 @@ module View =
                     prop.text "Login Page"
                 ]
                 Html.form [
+                    prop.style [ 
+                        style.display.flex; 
+                        style.flexDirection.column; 
+                        style.gap 10 
+                    ]
                     prop.children [
                         Html.input [
                             prop.type' "text"
                             prop.placeholder "Username"
                             prop.value state.credential.username
-                            prop.onChange (fun v -> 
-                                let updatedCreds = { state.credential with username = v }
-                                let updatedState = { state with credential = updatedCreds }
-                                dispatch NoOp // Replace with actual dispatch if needed
-                            )
+                            prop.onChange (SetUsername >> dispatch)
                         ]
                         Html.input [
                             prop.type' "password"
                             prop.placeholder "Password"
                             prop.value state.credential.password
-                            prop.onChange (fun v -> 
-                                let updatedCreds = { state.credential with password = v }
-                                let updatedState = { state with credential = updatedCreds }
-                                dispatch NoOp // Replace with actual dispatch if needed
-                            )
+                            prop.onChange (SetPassword >> dispatch)
                         ]
                         Html.button [
                             prop.type' "submit"

@@ -1,49 +1,25 @@
 namespace Client.Pages.Sandbox.SplittingProgramsPage
 
-[<AutoOpen>]
-module Types = 
-    type Page = 
-        | CounterPage
-        | TextInputPage
+[<RequireQualifiedAccess>]
+module Counter = 
+    [<AutoOpen>]
+    module Types =
+        type State = { count: int }
+        type Msg = Increment | Decrement
 
-    type State = {
-        count: int
-        text: string
-        isUpperCase: bool
-        currentPage: Page
-    }
+    module State =
+        let init () = { count = 0 }
 
-    type Msg = 
-        | Increment
-        | Decrement
-        | SetText of string
-        | ToggleCase
-        | NavigateTo of Page
+        let update msg state =
+            match msg with
+            | Increment -> { state with count = state.count + 1 }
+            | Decrement -> { state with count = state.count - 1 }
 
-module State =
-    let init () = 
-        { count = 0; text = ""; isUpperCase = false; currentPage = CounterPage }
+    module View =
+        open Feliz
 
-    let update msg state =
-        match msg with
-        | Increment -> { state with count = state.count + 1 }
-        | Decrement -> { state with count = state.count - 1 }
-        | SetText text -> { state with text = text }
-        | ToggleCase -> { state with isUpperCase = not state.isUpperCase }
-        | NavigateTo page -> { state with currentPage = page }
-
-module View =
-    open Feliz
-
-    let render state dispatch =
-        let renderCounter () =
+        let render state dispatch =
             Html.div [
-                Html.nav [
-                    Html.button [
-                        prop.text "Navigate to Text Input"
-                        prop.onClick (fun _ -> dispatch (NavigateTo TextInputPage))
-                    ]
-                ]
                 Html.h2 "Counter"
                 Html.p $"Count: {state.count}"
                 Html.button [
@@ -56,30 +32,129 @@ module View =
                 ]
             ]
 
-        let renderTextInput () =
-            let displayedText = if state.isUpperCase then state.text.ToUpper() else state.text
+[<RequireQualifiedAccess>]
+module TextInput =
+    [<AutoOpen>]
+    module Types =
+        type State = { text: string; isUpperCase: bool }
+        type Msg = SetText of string | ToggleCase
+
+    module State =
+        let init () = { text = ""; isUpperCase = false }
+
+        let update msg state =
+            match msg with
+            | SetText text -> { state with text = text }
+            | ToggleCase -> { state with isUpperCase = not state.isUpperCase }
+
+        let displayText state =
+            match state.isUpperCase with
+            | true -> state.text.ToUpper()
+            | false -> state.text 
+
+    module View =
+        open Feliz
+
+        let render state dispatch =
             Html.div [
-                Html.nav [
-                    Html.button [
-                        prop.text "Navigate to Counter"
-                        prop.onClick (fun _ -> dispatch (NavigateTo CounterPage))
-                    ]
-                ]
                 Html.h2 "Text Input"
                 Html.input [
                     prop.type' "text"
                     prop.value state.text
                     prop.onChange (fun e -> dispatch (SetText e))
                 ]
-                Html.p $"You typed: {displayedText}"
+                Html.p $"You typed: {State.displayText state}"
                 Html.button [
                     prop.text "Toggle Case"
                     prop.onClick (fun _ -> dispatch ToggleCase)
                 ]
             ]
 
+[<AutoOpen>]
+module Types = 
+    [<RequireQualifiedAccess>]
+    type Page =
+        | Counter of Counter.Types.State
+        | TextInput of TextInput.Types.State
+
+    [<RequireQualifiedAccess>]
+    type Msg = 
+        | Counter of Counter.Types.Msg
+        | TextInput of TextInput.Types.Msg
+        | NavigateTo of Page
+
+    type State = {
+        currentPage: Page
+        counterPage: Counter.Types.State
+        textInputPage: TextInput.Types.State
+    }
+
+module State =
+    let init () =
+        let counter = Counter.State.init()
+        let textInput = TextInput.State.init()
+        { currentPage = Page.Counter counter
+          counterPage = counter
+          textInputPage = textInput }
+
+    let update msg state =
+        match msg, state.currentPage with
+        | Msg.Counter counterMsg, Page.Counter counterState ->
+            let updatedCounter = Counter.State.update counterMsg counterState
+            { state with
+                currentPage = Page.Counter updatedCounter
+                counterPage = updatedCounter
+            }
+        
+        | Msg.TextInput textInputMsg, Page.TextInput textInputState ->
+            let updatedText = TextInput.State.update textInputMsg textInputState
+            { state with
+                currentPage = Page.TextInput updatedText
+                textInputPage = updatedText
+            }
+                    
+        | Msg.NavigateTo page, _ -> 
+            match page with
+            | Page.Counter s -> 
+                { state with 
+                    currentPage = page
+                    counterPage = s
+                }
+            | Page.TextInput s -> 
+                { state with 
+                    currentPage = page 
+                    textInputPage = s
+                }
+        
+        | _, _ -> 
+            state // Ignore messages that don't match the current state
+
+module View =
+    open Feliz
+
+    let renderNavigation state dispatch =
         Html.div [
             match state.currentPage with
-            | CounterPage -> renderCounter()
-            | TextInputPage -> renderTextInput()
+            | Page.Counter value ->
+                Html.button [
+                    prop.text "Navigate to Text Input"
+                    prop.onClick (fun _ -> dispatch (Msg.NavigateTo (Page.TextInput state.textInputPage)))
+                ]
+            | Page.TextInput _ ->
+                Html.button [
+                    prop.text "Navigate to Counter"
+                    prop.onClick (fun _ -> dispatch (Msg.NavigateTo (Page.Counter state.counterPage)))
+                ]
+        ]
+
+    let render state dispatch =
+        Html.div [
+            renderNavigation state dispatch
+
+            match state.currentPage with
+            | Page.Counter state -> 
+                Counter.View.render state (Msg.Counter >> dispatch)
+
+            | Page.TextInput state -> 
+                TextInput.View.render state (Msg.TextInput >> dispatch)
         ]

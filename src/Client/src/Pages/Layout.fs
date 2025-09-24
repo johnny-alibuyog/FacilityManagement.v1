@@ -11,6 +11,11 @@ module Types =
         route: Client.Pages.Route
     }
 
+    type Page =
+        | Home
+        | Login of Client.Pages.Login.Page.Types.State
+        | NotFound
+
     type Msg = 
         | NoOp
         | RouteChanged of Client.Pages.Route
