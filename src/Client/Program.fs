@@ -17,7 +17,7 @@ Program.mkProgram State.init State.update View.render
 *)
 
 open Elmish
-open Client.Pages.Sandbox.SplittingProgramsPage
+open Client.Pages.Sandbox.SplittingPrograms.Layout
 
 open Elmish.HMR
 
