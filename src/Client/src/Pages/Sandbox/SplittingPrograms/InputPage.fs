@@ -6,13 +6,21 @@ module Types =
     type State = { text: string; case: Case }
     type Msg = SetText of string | ToggleCase
 
+    module Case =
+        let toggle case =
+            match case with
+            | Upper -> Lower
+            | Lower -> Upper
+
 module State =
-    let init () = { text = ""; case = Lower }
+    open Elmish
+
+    let init () = { text = ""; case = Lower }, Cmd.none
 
     let update msg state =
         match msg with
-        | SetText text -> { state with text = text }
-        | ToggleCase -> { state with case = if state.case = Upper then Lower else Upper }
+        | SetText text -> { state with text = text }, Cmd.none
+        | ToggleCase -> { state with case = Case.toggle state.case }, Cmd.none
 
     let displayText state =
         match state.case with

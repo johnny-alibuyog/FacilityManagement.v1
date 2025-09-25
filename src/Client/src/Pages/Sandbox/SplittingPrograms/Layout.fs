@@ -7,59 +7,69 @@ module Types =
     [<RequireQualifiedAccess>]
     type Page =
         | Counter of CounterPage.Types.State
-        | TextInput of InputPage.Types.State
+        | Input of InputPage.Types.State
 
     [<RequireQualifiedAccess>]
     type Msg = 
         | Counter of CounterPage.Types.Msg
-        | TextInput of InputPage.Types.Msg
+        | Input of InputPage.Types.Msg
         | NavigateTo of Page
 
     type State = {
         currentPage: Page
         counterPage: CounterPage.Types.State
-        textInputPage: InputPage.Types.State
+        inputPage: InputPage.Types.State
     }
 
 module State =
+    open Elmish
+
     let init () =
-        let counter = CounterPage.State.init()
-        let textInput = InputPage.State.init()
-        { currentPage = Page.Counter counter
-          counterPage = counter
-          textInputPage = textInput }
+        let counter, _ = CounterPage.State.init()
+        let textInput, _ = InputPage.State.init()
+        { 
+            currentPage = Page.Counter counter
+            counterPage = counter
+            inputPage = textInput 
+        },
+        Cmd.none
 
     let update msg state =
         match msg, state.currentPage with
-        | Msg.Counter counterMsg, Page.Counter counterState ->
-            let updatedCounter = CounterPage.State.update counterMsg counterState
+        | Msg.Counter msg', Page.Counter state' ->
+            let updated, _ = CounterPage.State.update msg' state'
             { state with
-                currentPage = Page.Counter updatedCounter
-                counterPage = updatedCounter
-            }
+                currentPage = Page.Counter updated
+                counterPage = updated
+            },
+            Cmd.none
         
-        | Msg.TextInput textInputMsg, Page.TextInput textInputState ->
-            let updatedText = InputPage.State.update textInputMsg textInputState
+        | Msg.Input msg', Page.Input state' ->
+            let updated, _ = InputPage.State.update msg' state'
             { state with
-                currentPage = Page.TextInput updatedText
-                textInputPage = updatedText
-            }
+                currentPage = Page.Input updated
+                inputPage = updated
+            },
+            Cmd.none
                     
         | Msg.NavigateTo page, _ -> 
             match page with
-            | Page.Counter s -> 
+            | Page.Counter state' -> 
                 { state with 
                     currentPage = page
-                    counterPage = s
-                }
-            | Page.TextInput s -> 
+                    counterPage = state'
+                },
+                Cmd.none
+
+            | Page.Input state' -> 
                 { state with 
                     currentPage = page 
-                    textInputPage = s
-                }
+                    inputPage = state'
+                },
+                Cmd.none
         
         | _, _ -> 
-            state // Ignore messages that don't match the current state
+            state, Cmd.none // Ignore messages that don't match the current state
 
 module View =
     open Feliz
@@ -70,9 +80,9 @@ module View =
             | Page.Counter value ->
                 Html.button [
                     prop.text "Navigate to Text Input"
-                    prop.onClick (fun _ -> dispatch (Msg.NavigateTo (Page.TextInput state.textInputPage)))
+                    prop.onClick (fun _ -> dispatch (Msg.NavigateTo (Page.Input state.inputPage)))
                 ]
-            | Page.TextInput _ ->
+            | Page.Input _ ->
                 Html.button [
                     prop.text "Navigate to Counter"
                     prop.onClick (fun _ -> dispatch (Msg.NavigateTo (Page.Counter state.counterPage)))
@@ -87,6 +97,6 @@ module View =
             | Page.Counter state -> 
                 CounterPage.View.render state (Msg.Counter >> dispatch)
 
-            | Page.TextInput state -> 
-                InputPage.View.render state (Msg.TextInput >> dispatch)
+            | Page.Input state -> 
+                InputPage.View.render state (Msg.Input >> dispatch)
         ]

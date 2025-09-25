@@ -6,12 +6,14 @@ module Types =
     type Msg = Increment | Decrement
 
 module State =
-    let init () = { count = 0 }
+    open Elmish
+
+    let init () = { count = 0 }, Cmd.none
 
     let update msg state =
         match msg with
-        | Increment -> { state with count = state.count + 1 }
-        | Decrement -> { state with count = state.count - 1 }
+        | Increment -> { state with count = state.count + 1 }, Cmd.none
+        | Decrement -> { state with count = state.count - 1 }, Cmd.none
 
 module View =
     open Feliz

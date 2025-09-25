@@ -17,11 +17,11 @@ Program.mkProgram State.init State.update View.render
 *)
 
 open Elmish
-open Client.Pages.Sandbox.SplittingPrograms.Layout
+open Client.Pages.Sandbox.IntegratingCommands.CounterWithDelay
 
 open Elmish.HMR
 
-Program.mkSimple State.init State.update View.render
+Program.mkProgram State.init State.update View.render
 |> Program.withConsoleTrace
 |> Program.withReactSynchronous "root"
 |> Program.run
