@@ -17,7 +17,7 @@ Program.mkProgram State.init State.update View.render
 *)
 
 open Elmish
-open Client.Pages.Sandbox.IntegratingCommands.CounterWithDelay
+open Client.Pages.Login.Page
 
 open Elmish.HMR
 

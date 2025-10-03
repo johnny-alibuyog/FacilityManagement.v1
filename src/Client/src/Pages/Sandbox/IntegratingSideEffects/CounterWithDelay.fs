@@ -39,6 +39,17 @@ module Types =
             | Started -> "..."
             | Completed value -> string value
 
+module MockApi =
+    let increment (current: int) = async {
+        do! Async.Sleep 300
+        return current + 1
+    }
+
+    let decrement (current: int) = async {
+        do! Async.Sleep 300
+        return current - 1
+    }
+
 module State =
     open Elmish
 
@@ -50,19 +61,14 @@ module State =
     let init () = Initializing, Cmd.OfAsync.perform delay 1000 (fun () -> Initialize)
 
     let update msg state =
-        let callEndpoint action = async {
-            // Simulate an API call delay
-            do! Async.Sleep 300
-            return action()
-        }
 
         match msg, state with
         | Initialize, _ ->
             Initialized (Completed 0 |> Model.create), Cmd.none
 
         | RequestIncrement, Initialized model ->
-            let increment () = Model.count model +  1
-            let cmd = Cmd.OfAsync.perform callEndpoint increment ReceivedIncrement
+            let count = Model.count model
+            let cmd = Cmd.OfAsync.perform MockApi.increment count ReceivedIncrement
 
             Initialized { model with count = Started }, cmd
 
@@ -70,8 +76,8 @@ module State =
             Initialized { model with count = Completed newCount }, Cmd.none
 
         | RequestDecrement, Initialized model ->
-            let decrement () = Model.count model - 1
-            let cmd = Cmd.OfAsync.perform callEndpoint decrement ReceivedDecrement
+            let count = Model.count model
+            let cmd = Cmd.OfAsync.perform MockApi.decrement count ReceivedDecrement
 
             Initialized { model with count = Started }, cmd
 

@@ -5,7 +5,9 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="src/Pages/Extentions.fs" />
     <Compile Include="src/Pages/Types.fs" />
+    <Compile Include="src/Pages/Login/Api.fs" />
     <Compile Include="src/Pages/Login/Route.fs" />
     <Compile Include="src/Pages/Login/Page.fs" />
     <Compile Include="src/Pages/Sandbox/SplittingPrograms/CounterPage.fs" />
