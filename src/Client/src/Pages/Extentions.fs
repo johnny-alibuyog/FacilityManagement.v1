@@ -1,4 +1,4 @@
-namespace Client.Pages.Extentions
+namespace Client.Pages.Extensions
 
 open Elmish
 

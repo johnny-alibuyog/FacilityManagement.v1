@@ -1,5 +1,4 @@
-﻿(*
-
+﻿
 open Elmish
 open Client.Pages.Layout
 
@@ -14,15 +13,13 @@ Program.mkProgram State.init State.update View.render
 |> Program.withReactSynchronous "root"
 |> Program.run
 
-*)
 
-open Elmish
-open Client.Pages.Login.Page
+// open Elmish
+// open Client.Pages.Login.Page
 
-open Elmish.HMR
+// open Elmish.HMR
 
-Program.mkProgram State.init State.update View.render
-|> Program.withConsoleTrace
-|> Program.withReactSynchronous "root"
-|> Program.run
-
+// Program.mkProgram State.init State.update View.render
+// |> Program.withConsoleTrace
+// |> Program.withReactSynchronous "root"
+// |> Program.run

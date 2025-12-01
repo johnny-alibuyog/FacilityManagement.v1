@@ -1,43 +1,39 @@
 namespace Client.Pages.Sandbox.IntegratingCommands.CounterWithDelay
 
-[<AutoOpen>]
-module Types =
-    type ApiCall<'t> =
-        | Started
-        | Completed of 't
+open Client.Pages.Extensions
 
-    type Model = {
-        count: ApiCall<int>
-    }
+type Model = {
+    count: ApiCall<unit, int>
+}
 
-    type State = 
-        | Initializing
-        | Initialized of Model
-    
-    type Msg = 
-        | Initialize
-        | RequestIncrement
-        | ReceivedIncrement of int
-        | RequestDecrement
-        | ReceivedDecrement of int
+type State = 
+    | Initializing
+    | Initialized of Model
 
-    module Model =
-        let create count = { count = count }
+type Msg = 
+    | Initialize
+    | RequestIncrement
+    | ReceivedIncrement of int
+    | RequestDecrement
+    | ReceivedDecrement of int
 
-        let count model =
-            match model.count with
-            | Started -> 0
-            | Completed value -> value
+module Model =
+    let create count = { count = count }
 
-        let isLoading model =
-            match model.count with
-            | Started -> true
-            | Completed _ -> false
+    let count model =
+        match model.count with
+        | Start () -> 0
+        | Finished value -> value
 
-        let display model =
-            match model.count with
-            | Started -> "..."
-            | Completed value -> string value
+    let isLoading model =
+        match model.count with
+        | Start () -> true
+        | Finished _ -> false
+
+    let display model =
+        match model.count with
+        | Start () -> "..."
+        | Finished value -> string value
 
 module MockApi =
     let increment (current: int) = async {
@@ -64,25 +60,25 @@ module State =
 
         match msg, state with
         | Initialize, _ ->
-            Initialized (Completed 0 |> Model.create), Cmd.none
+            Initialized (Finished 0 |> Model.create), Cmd.none
 
         | RequestIncrement, Initialized model ->
             let count = Model.count model
             let cmd = Cmd.OfAsync.perform MockApi.increment count ReceivedIncrement
 
-            Initialized { model with count = Started }, cmd
+            Initialized { model with count = Start () }, cmd
 
         | ReceivedIncrement newCount, Initialized model ->
-            Initialized { model with count = Completed newCount }, Cmd.none
+            Initialized { model with count = Finished newCount }, Cmd.none
 
         | RequestDecrement, Initialized model ->
             let count = Model.count model
             let cmd = Cmd.OfAsync.perform MockApi.decrement count ReceivedDecrement
 
-            Initialized { model with count = Started }, cmd
+            Initialized { model with count = Start () }, cmd
 
         | ReceivedDecrement newCount, Initialized model ->
-            Initialized { model with count = Completed newCount }, Cmd.none
+            Initialized { model with count = Finished newCount }, Cmd.none
 
         | _, _ ->
             state, Cmd.none

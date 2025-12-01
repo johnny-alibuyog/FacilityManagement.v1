@@ -1,34 +1,28 @@
 namespace Client.Pages.Login.Page
 
-open Client.Pages.Extentions
-module Api = Client.Pages.Login.Api
+open Client.Pages.Extensions
+module Api = Client.MockApi
 
-[<AutoOpen>]
-module Types = 
+type Msg = 
+    | SetUsername of string
+    | SetPassword of string
+    | Login of ApiCall<Api.LoginRequest, Api.LoginResponse>
+    | LoggedIn of Api.User
 
-    type Credentials = Api.LoginRequest
-
-    module Credentials = 
-        let init (): Credentials = { username = ""; password = "" }
-
-    type Authenticated = Api.Authenticated
-
-    type Msg = 
-        | SetUsername of string
-        | SetPassword of string
-        | Login of ApiCall<Api.LoginRequest, Api.LoginResponse>
-
-    type State = {
-        credentials: Credentials
-        loginStatus: ApiData<Api.LoginResponse>
-    }
+type State = {
+    credentials: Api.LoginRequest
+    loginStatus: ApiData<Api.LoginResponse>
+}
 
 module State = 
     open Elmish
 
     let init () = 
         { 
-            credentials = Credentials.init ()
+            credentials = {
+                username = ""
+                password = ""
+            }
             loginStatus = NotStarted
         }, 
         Cmd.none
@@ -43,17 +37,23 @@ module State =
 
         | Login call ->
             match call with
-            | Start request -> 
-                let cmd = Cmd.OfAsync.perform Api.login request Finished
+            | Start credentials-> 
+                let cmd = Cmd.OfAsync.perform Api.login credentials Finished
                 { state with loginStatus = Loading None }, Cmd.map Login cmd
 
-            | Finished response -> 
-                { state with loginStatus = Loaded response }, Cmd.none
+            | Finished (Api.Authenticated response) ->
+                { state with loginStatus = Loaded (Api.Authenticated response) }, Cmd.ofMsg (LoggedIn response)
+
+            | Finished Api.IncorrectCredentials ->
+                { state with loginStatus = Loaded Api.IncorrectCredentials }, Cmd.none
+
+        | LoggedIn _ ->
+            state, Cmd.none // Handled in Layout to switch to Home page
 
     let isLoading state =
         match state.loginStatus with
         | Loading _ -> true
-        | NotStarted | Loaded _ -> false
+        |  _ -> false
 
 module View =
     open Feliz
@@ -122,8 +122,8 @@ module View =
                                 Html.button [
                                     prop.type' "submit"
                                     prop.text "Login"
-                                    prop.onClick (fun ev -> 
-                                        ev.preventDefault() // prevent form submission
+                                    prop.onClick (fun e -> 
+                                        e.preventDefault() // prevent form submission
                                         dispatch (Login (Start state.credentials))
                                     )
                                 ]

@@ -1,16 +1,22 @@
 namespace Client.Pages.Sandbox.SplittingPrograms.InputPage
 
-[<AutoOpen>]
-module Types =
-    type Case = Upper | Lower
-    type State = { text: string; case: Case }
-    type Msg = SetText of string | ToggleCase
 
-    module Case =
-        let toggle case =
-            match case with
-            | Upper -> Lower
-            | Lower -> Upper
+type Case = Upper | Lower
+
+module Case =
+    let toggle case =
+        match case with
+        | Upper -> Lower
+        | Lower -> Upper
+
+type Msg = 
+    | SetText of string 
+    | ToggleCase
+
+type State = { 
+    text: string; 
+    case: Case 
+}
 
 module State =
     open Elmish

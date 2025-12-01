@@ -8,9 +8,10 @@ open Client.Pages
 //  - https://www.compositional-it.com/news-blog/elmish-navigation-with-feliz-router/
 //  - https://philectrosophy.com/blog/path-routing-with-the-safe-stack
 
+[<RequireQualifiedAccess>]
 type Route =
-    | HomeRoute
-    | LoginRoute of Login.Route
+    | Login of Login.Route
+    | Home of Home.Route
     | NotFound
 
 module Route =
@@ -18,6 +19,7 @@ module Route =
 
     let ofUrl (segments: UrlSegments) =
         match segments with
-        | [] -> HomeRoute
-        | Login.Route.IsLogin route-> LoginRoute route
-        | _ -> NotFound
+        // Empty path maps to a concrete route (was: partial application of HomeRoute causing a function type)
+        | Login.Route.IsLogin route -> Route.Login route
+        | Home.Route.IsHome route -> Route.Home route
+        | _ -> Route.NotFound

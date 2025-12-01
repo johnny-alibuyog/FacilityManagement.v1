@@ -2,24 +2,22 @@ namespace Client.Pages.Sandbox.SplittingPrograms.Layout
 
 open Client.Pages.Sandbox.SplittingPrograms
 
-[<AutoOpen>]
-module Types = 
-    [<RequireQualifiedAccess>]
-    type Page =
-        | Counter of CounterPage.Types.State
-        | Input of InputPage.Types.State
+[<RequireQualifiedAccess>]
+type Page =
+    | Counter of CounterPage.State
+    | Input of InputPage.State
 
-    [<RequireQualifiedAccess>]
-    type Msg = 
-        | Counter of CounterPage.Types.Msg
-        | Input of InputPage.Types.Msg
-        | NavigateTo of Page
+[<RequireQualifiedAccess>]
+type Msg = 
+    | Counter of CounterPage.Msg
+    | Input of InputPage.Msg
+    | NavigateTo of Page
 
-    type State = {
-        activePage: Page
-        counterPage: CounterPage.Types.State
-        inputPage: InputPage.Types.State
-    }
+type State = {
+    activePage: Page
+    counterPage: CounterPage.State
+    inputPage: InputPage.State
+}
 
 module State =
     open Elmish

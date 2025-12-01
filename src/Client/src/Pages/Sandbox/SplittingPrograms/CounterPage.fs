@@ -1,9 +1,8 @@
 namespace Client.Pages.Sandbox.SplittingPrograms.CounterPage
 
-[<AutoOpen>]
-module Types =
-    type State = { count: int }
-    type Msg = Increment | Decrement
+type State = { count: int }
+
+type Msg = Increment | Decrement
 
 module State =
     open Elmish

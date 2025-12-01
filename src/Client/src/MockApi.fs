@@ -1,10 +1,10 @@
-namespace Client.Pages.Login
+namespace Client
 
 // this is a mock api module, replace with real api calls
-module Api =
+module MockApi =
     type AccessToken = AccessToken of string
 
-    type Authenticated = {
+    type User = {
         username: string
         token: AccessToken
     }
@@ -15,7 +15,7 @@ module Api =
     }
 
     type LoginResponse =
-        | Authenticated of Authenticated
+        | Authenticated of User
         | IncorrectCredentials
 
     let login (request: LoginRequest) = async {
