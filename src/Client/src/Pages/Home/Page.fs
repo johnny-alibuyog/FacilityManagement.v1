@@ -2,29 +2,32 @@ namespace Client.Pages.Home.Page
 
 module Api = Client.MockApi
 
+open Client.Common.Types
 type Msg = 
     | Logout
     | LoggedOut
 
 type State = {
-    user: Api.User option
+    session: Session option
 }
 
 module State =
     open Elmish
+    open Feliz.Router
 
-    let init user = { user = Some user }, Cmd.none
+    let init session = { session = session }, Cmd.none
 
     let update msg state =
         match msg with
         | Logout -> 
-            { state with user = None }, Cmd.ofMsg LoggedOut
+            state, Cmd.OfAsync.perform Api.logout () (fun _ -> LoggedOut)
 
         | LoggedOut -> 
-            state, Cmd.none
+            state, Cmd.navigate "login"
 
 module View =
     open Feliz
+    open Feliz.Router
 
     let renderWelcome username dispatch =
         Html.div [
@@ -47,7 +50,7 @@ module View =
                 Html.a [
                     prop.className "mt-4 text-blue-500 underline"
                     prop.text "Go to Login"
-                    prop.href "#/login"
+                    prop.href (Router.format "login")
                 ]
             ]
         ]
@@ -61,9 +64,10 @@ module View =
                     prop.text "Home Page"
                 ]
 
-                match state.user with
-                | Some user ->
-                    renderWelcome user.username dispatch
+                match state.session with
+                | Some session ->
+                    renderWelcome session.username dispatch
+
                 | None -> 
                     renderAnonymous dispatch
             ]

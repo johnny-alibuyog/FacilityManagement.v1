@@ -1,4 +1,4 @@
-namespace Client.Pages.Sandbox.SplittingPrograms.InputPage
+namespace Client.Pages.Sandbox.SplittingPrograms.Input
 
 
 type Case = Upper | Lower

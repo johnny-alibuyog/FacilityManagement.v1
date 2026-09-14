@@ -3,7 +3,7 @@ namespace Client.Pages.Login
 type Route = | LoginPage
 
 module Route =
-    open Client.Pages.Types
+    open Client.Common.Types
 
     let toUrl route =
         match route with

@@ -1,6 +1,6 @@
-namespace Client.Pages.Sandbox.IntegratingCommands.CounterWithDelay
+namespace Client.Pages.Sandbox.IntegratingSideEffects.Page
 
-open Client.Pages.Extensions
+open Client.Common.Extensions
 
 type Model = {
     count: ApiCall<unit, int>
@@ -22,17 +22,17 @@ module Model =
 
     let count model =
         match model.count with
-        | Start () -> 0
+        | Starting () -> 0
         | Finished value -> value
 
     let isLoading model =
         match model.count with
-        | Start () -> true
+        | Starting () -> true
         | Finished _ -> false
 
     let display model =
         match model.count with
-        | Start () -> "..."
+        | Starting () -> "..."
         | Finished value -> string value
 
 module MockApi =
@@ -66,7 +66,7 @@ module State =
             let count = Model.count model
             let cmd = Cmd.OfAsync.perform MockApi.increment count ReceivedIncrement
 
-            Initialized { model with count = Start () }, cmd
+            Initialized { model with count = Starting () }, cmd
 
         | ReceivedIncrement newCount, Initialized model ->
             Initialized { model with count = Finished newCount }, Cmd.none
@@ -75,7 +75,7 @@ module State =
             let count = Model.count model
             let cmd = Cmd.OfAsync.perform MockApi.decrement count ReceivedDecrement
 
-            Initialized { model with count = Start () }, cmd
+            Initialized { model with count = Starting () }, cmd
 
         | ReceivedDecrement newCount, Initialized model ->
             Initialized { model with count = Finished newCount }, Cmd.none

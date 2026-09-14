@@ -1,6 +1,6 @@
 namespace Client.Pages.Login.Page
 
-open Client.Pages.Extensions
+open Client.Common.Extensions
 module Api = Client.MockApi
 
 type Msg = 
@@ -16,12 +16,13 @@ type State = {
 
 module State = 
     open Elmish
+    open Feliz.Router
 
     let init () = 
         { 
             credentials = {
-                username = ""
-                password = ""
+                username = "admin"
+                password = "password"
             }
             loginStatus = NotStarted
         }, 
@@ -37,7 +38,7 @@ module State =
 
         | Login call ->
             match call with
-            | Start credentials-> 
+            | Starting credentials-> 
                 let cmd = Cmd.OfAsync.perform Api.login credentials Finished
                 { state with loginStatus = Loading None }, Cmd.map Login cmd
 
@@ -48,7 +49,7 @@ module State =
                 { state with loginStatus = Loaded Api.IncorrectCredentials }, Cmd.none
 
         | LoggedIn _ ->
-            state, Cmd.none // Handled in Layout to switch to Home page
+            state, Cmd.navigate "home"
 
     let isLoading state =
         match state.loginStatus with
@@ -124,7 +125,7 @@ module View =
                                     prop.text "Login"
                                     prop.onClick (fun e -> 
                                         e.preventDefault() // prevent form submission
-                                        dispatch (Login (Start state.credentials))
+                                        dispatch (Login (Starting state.credentials))
                                     )
                                 ]
                             ]

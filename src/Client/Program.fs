@@ -1,13 +1,12 @@
-﻿
-open Elmish
+﻿open Elmish
 open Client.Pages.Layout
 
- #if DEBUG
+#if DEBUG
 open Elmish.HMR
 #endif
 
 Program.mkProgram State.init State.update View.render
- #if DEBUG
+#if DEBUG
 |> Program.withConsoleTrace
 #endif
 |> Program.withReactSynchronous "root"

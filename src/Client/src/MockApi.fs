@@ -29,3 +29,8 @@ module MockApi =
         else
             return IncorrectCredentials
     }
+
+    let logout () = async {
+        do! Async.Sleep 500 // simulate network delay
+        return ()
+    }

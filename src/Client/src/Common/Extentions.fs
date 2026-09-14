@@ -1,4 +1,4 @@
-namespace Client.Pages.Extensions
+namespace Client.Common.Extensions
 
 open Elmish
 
@@ -8,7 +8,7 @@ type ApiData<'t> =
     | Loaded of 't
 
 type ApiCall<'TStart, 'TFinished> =
-    | Start of 'TStart
+    | Starting of 'TStart
     | Finished of 'TFinished
 
 module Cmd =
@@ -25,7 +25,7 @@ module Cmd =
         Cmd.ofEffect delayedCmd
     
 module Async =
-    let map f asyncOp = async {
-        let! result = asyncOp
+    let map f asyncResult = async {
+        let! result = asyncResult
         return f result
     }

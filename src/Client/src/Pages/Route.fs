@@ -15,7 +15,7 @@ type Route =
     | NotFound
 
 module Route =
-    open Client.Pages.Types
+    open Client.Common.Types
 
     let ofUrl (segments: UrlSegments) =
         match segments with
@@ -23,3 +23,8 @@ module Route =
         | Login.Route.IsLogin route -> Route.Login route
         | Home.Route.IsHome route -> Route.Home route
         | _ -> Route.NotFound
+
+    let isProtected route =
+        match route with
+        | Route.Home _ -> true
+        | _ -> false

@@ -16,7 +16,6 @@ module Route =
         | [ "input"] -> Some InputPage
         | _ -> None
 
-
     let (|IsSplittingPrograms|_|) (segments: UrlSegments) =
         match segments with
         | "sandbox" :: "splitting-programs" :: rest -> ofUrl rest

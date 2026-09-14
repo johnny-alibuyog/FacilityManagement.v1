@@ -1,4 +1,4 @@
-namespace Client.Pages.Sandbox.SplittingPrograms.CounterPage
+namespace Client.Pages.Sandbox.SplittingPrograms.Counter
 
 type State = { count: int }
 

@@ -1,33 +1,33 @@
-namespace Client.Pages.Sandbox.SplittingPrograms.Layout
+namespace Client.Pages.Sandbox.SplittingPrograms.Page
 
 open Client.Pages.Sandbox.SplittingPrograms
 
 [<RequireQualifiedAccess>]
 type Page =
-    | Counter of CounterPage.State
-    | Input of InputPage.State
+    | Counter of Counter.State
+    | Input of Input.State
 
 [<RequireQualifiedAccess>]
 type Msg = 
-    | Counter of CounterPage.Msg
-    | Input of InputPage.Msg
+    | Counter of Counter.Msg
+    | Input of Input.Msg
     | NavigateTo of Page
 
 type State = {
-    activePage: Page
-    counterPage: CounterPage.State
-    inputPage: InputPage.State
+    currentPage: Page
+    counterPage: Counter.State
+    inputPage: Input.State
 }
 
 module State =
     open Elmish
 
     let init () =
-        let counterState, counterCmd = CounterPage.State.init()
-        let inputState, inputCmd = InputPage.State.init()
+        let counterState, counterCmd = Counter.State.init()
+        let inputState, inputCmd = Input.State.init()
         
         let initialState = { 
-            activePage = Page.Counter counterState
+            currentPage = Page.Counter counterState
             counterPage = counterState
             inputPage = inputState 
         }
@@ -40,19 +40,19 @@ module State =
         initialState, initialCmd
 
     let update msg state =
-        match msg, state.activePage with
+        match msg, state.currentPage with
         | Msg.Counter msg', Page.Counter state' ->
-            let updated, cmd = CounterPage.State.update msg' state'
+            let updated, cmd = Counter.State.update msg' state'
             { state with
-                activePage = Page.Counter updated
+                currentPage = Page.Counter updated
                 counterPage = updated
             },
             Cmd.map Msg.Counter cmd
         
         | Msg.Input msg', Page.Input state' ->
-            let updated, cmd = InputPage.State.update msg' state'
+            let updated, cmd = Input.State.update msg' state'
             { state with
-                activePage = Page.Input updated
+                currentPage = Page.Input updated
                 inputPage = updated
             },
             Cmd.map Msg.Input cmd
@@ -61,14 +61,14 @@ module State =
             match page with
             | Page.Counter state' -> 
                 { state with 
-                    activePage = page
+                    currentPage = page
                     counterPage = state'
                 },
                 Cmd.none
 
             | Page.Input state' -> 
                 { state with 
-                    activePage = page 
+                    currentPage = page 
                     inputPage = state'
                 },
                 Cmd.none
@@ -81,7 +81,7 @@ module View =
 
     let renderNavigation state dispatch =
         Html.div [
-            match state.activePage with
+            match state.currentPage with
             | Page.Counter value ->
                 Html.button [
                     prop.text "Navigate to Text Input"
@@ -98,10 +98,10 @@ module View =
         Html.div [
             renderNavigation state dispatch
 
-            match state.activePage with
+            match state.currentPage with
             | Page.Counter state -> 
-                CounterPage.View.render state (Msg.Counter >> dispatch)
+                Counter.View.render state (Msg.Counter >> dispatch)
 
             | Page.Input state -> 
-                InputPage.View.render state (Msg.Input >> dispatch)
+                Input.View.render state (Msg.Input >> dispatch)
         ]
