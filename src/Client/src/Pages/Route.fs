@@ -2,11 +2,7 @@ namespace Client.Pages
 
 open Client.Pages
 
-// TODO: Learn more about routing in Feliz.Router 
-//  - https://zaid-ajaj.github.io/the-elmish-book/#/chapters/scaling/modelling-nested-routes
-//  - https://github.com/Zaid-Ajaj/Feliz.Router?tab=readme-ov-file
-//  - https://www.compositional-it.com/news-blog/elmish-navigation-with-feliz-router/
-//  - https://philectrosophy.com/blog/path-routing-with-the-safe-stack
+// Route matching is centralized here to keep page modules focused on local concerns.
 
 [<RequireQualifiedAccess>]
 type Route =

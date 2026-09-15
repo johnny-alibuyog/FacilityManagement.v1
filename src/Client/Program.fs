@@ -1,9 +1,6 @@
 ﻿open Elmish
+open Elmish.React
 open Client.Pages.Layout
-
-#if DEBUG
-open Elmish.HMR
-#endif
 
 Program.mkProgram State.init State.update View.render
 #if DEBUG
@@ -12,13 +9,3 @@ Program.mkProgram State.init State.update View.render
 |> Program.withReactSynchronous "root"
 |> Program.run
 
-
-// open Elmish
-// open Client.Pages.Login.Page
-
-// open Elmish.HMR
-
-// Program.mkProgram State.init State.update View.render
-// |> Program.withConsoleTrace
-// |> Program.withReactSynchronous "root"
-// |> Program.run

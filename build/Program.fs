@@ -2,6 +2,7 @@
 
 open Fake.Core
 open Fake.IO
+open System.IO
 // open Farmer
 // open Farmer.Builders
 
@@ -11,9 +12,11 @@ initializeContext ()
 
 let getAbsolute path = Path.getFullName path
 
+let buildDir = __SOURCE_DIRECTORY__
+
 let path = {|
-    root = getAbsolute "../"
-    client = getAbsolute "../src/Client"
+    root = getAbsolute (Path.Combine(buildDir, ".."))
+    client = getAbsolute (Path.Combine(buildDir, "..", "src", "Client"))
 |}
 
 Target.create "NpmInstall" (fun _ -> 
