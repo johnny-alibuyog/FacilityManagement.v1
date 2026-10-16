@@ -2,7 +2,6 @@ namespace Client.Pages.Layout
 
 open Client.Pages
 open Client.Common.Types
-open Elmish
 open Feliz
 open Feliz.Router
 
@@ -13,6 +12,7 @@ type Page =
     | Loading
     | Login of Login.Page.State
     | Home of Home.Page.State
+    | Sandbox of Sandbox.Layout.State
     | NotFound
 
 type State = {
@@ -26,8 +26,11 @@ type Msg =
     | RouteChanged of Client.Pages.Route
     | LoginMsg of Login.Page.Msg
     | HomeMsg of Home.Page.Msg
+    | SandboxMsg of Sandbox.Layout.Msg
 
 module State =
+    open Elmish
+
     let init () = 
         let route = Router.currentPath() |> Route.ofUrl
         { currentPage = Page.Loading; session = None; returnUrl = None }, Cmd.ofMsg (Msg.RouteChanged route)
@@ -39,6 +42,10 @@ module State =
             | Route.Login loginRoute ->
                 let loginState, loginCmd = Login.Page.State.init ()
                 { state with currentPage = Page.Login loginState }, Cmd.map Msg.LoginMsg loginCmd
+
+            | Route.Sandbox sandboxRoute ->
+                let sandboxState, sandboxCmd = Sandbox.Layout.State.init sandboxRoute
+                { state with currentPage = Page.Sandbox sandboxState }, Cmd.map Msg.SandboxMsg sandboxCmd
 
             | Route.Home homeRoute ->
                 let homeState, homeCmd = Home.Page.State.init state.session
@@ -73,6 +80,10 @@ module State =
                 | _ -> state.session
             { state with currentPage = Page.Home homeState; session = session }, Cmd.map Msg.HomeMsg homeCmd
 
+        | Msg.SandboxMsg sandboxMsg, Page.Sandbox sandboxState ->
+            let sandboxState, sandboxCmd = Sandbox.Layout.State.update sandboxMsg sandboxState
+            { state with currentPage = Page.Sandbox sandboxState }, Cmd.map Msg.SandboxMsg sandboxCmd
+
         | _, _ ->
             state, Cmd.none // Ignore messages not relevant to the current page
 
@@ -84,6 +95,9 @@ module View =
         
         | Page.Home homeState ->
             Home.Page.View.render homeState (Msg.HomeMsg >> dispatch)
+
+        | Page.Sandbox sandboxState ->
+            Sandbox.Layout.View.render sandboxState (Msg.SandboxMsg >> dispatch)
         
         | Page.NotFound ->
             Html.p "Not found"
@@ -93,7 +107,6 @@ module View =
 
     let render state dispatch =
         React.router [
-            router.pathMode
             router.onUrlChanged (Route.ofUrl >> Msg.RouteChanged >> dispatch)
             router.children [
                 renderActivePage state dispatch

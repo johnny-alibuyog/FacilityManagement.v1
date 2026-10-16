@@ -14,7 +14,7 @@
     <Compile Include="src/Pages/Login/Page.fs" />
     <Compile Include="src/Pages/Sandbox/SplittingPrograms/Counter.fs" />
     <Compile Include="src/Pages/Sandbox/SplittingPrograms/Input.fs" />
-    <Compile Include="src/Pages/Sandbox/SplittingPrograms/Page.fs" />
+    <Compile Include="src/Pages/Sandbox/SplittingPrograms/Layout.fs" />
     <Compile Include="src/Pages/Sandbox/IntegratingSideEffects/Page.fs" />
     <Compile Include="src/Pages/Sandbox/Route.fs" />
     <Compile Include="src/Pages/Sandbox/Layout.fs" />
